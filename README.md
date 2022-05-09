@@ -1,0 +1,2 @@
+# stallingbase.scanapp
+Android scanapplictie
