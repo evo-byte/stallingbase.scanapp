@@ -1,0 +1,129 @@
+﻿Build1=Default,b4a.example
+File1=Layout.bal
+FileGroup1=Default Group
+Group=Default Group
+Library1=core
+Library2=json
+Library3=keyvaluestore
+Library4=okhttputils2
+Library5=xui
+Library6=phone
+ManifestCode='This code will be applied to the manifest file during compilation.~\n~'You do not need to modify it in most cases.~\n~'See this link for for more information: https://www.b4x.com/forum/showthread.php?p=78136~\n~AddManifestText(~\n~<uses-sdk android:minSdkVersion="14" android:targetSdkVersion="29"/>~\n~<supports-screens android:largeScreens="true" ~\n~    android:normalScreens="true" ~\n~    android:smallScreens="true" ~\n~    android:anyDensity="true"/>)~\n~SetApplicationAttribute(android:icon, "@drawable/icon")~\n~SetApplicationAttribute(android:label, "$LABEL$")~\n~CreateResourceFromFile(Macro, Themes.LightTheme)~\n~'End of default text.~\n~
+Module1=Starter
+NumberOfFiles=1
+NumberOfLibraries=6
+NumberOfModules=1
+Version=11
+@EndOfDesignText@
+#Region  Project Attributes 
+	#ApplicationLabel: Stallingbase Client
+	#VersionCode: 1
+	#VersionName: 
+	'SupportedOrientations possible values: unspecified, landscape or portrait.
+	#SupportedOrientations: unspecified
+	#CanInstallToExternalStorage: False
+#End Region
+
+#Region  Activity Attributes 
+	#FullScreen: False
+	#IncludeTitle: True
+#End Region
+
+Sub Process_Globals
+	'These global variables will be declared once when the application starts.
+	'These variables can be accessed from all modules.
+	Private xui As XUI
+ 
+	Private tmr As Timer
+	Dim macaddress As String
+ 
+End Sub
+
+Sub Globals
+	'These global variables will be redeclared each time the activity is created.
+	Private btn_close As Button
+	Private txt_lastactivity As Label
+	Private input_tenant As EditText
+	Dim p As Phone
+	Private txt_tag As EditText
+End Sub
+
+Sub Activity_Create(FirstTime As Boolean)
+	Activity.LoadLayout("Layout")
+	Dim p As Phone
+	
+	tmr.Initialize("tmr", 300000)
+	tmr.Enabled = True
+	macaddress = p.GetSettings("android_id")
+	
+	txt_tag.RequestFocus
+	
+
+	 
+	
+End Sub
+
+Sub Activity_Resume
+
+End Sub
+
+Sub Activity_Pause (UserClosed As Boolean)
+
+End Sub
+ 
+Private Sub btn_close_Click
+ 
+ 
+	ExitApplication
+End Sub
+
+Private Sub btn_testconnection_Click
+	xui.MsgboxAsync("Verbinding oke...", "Verbindingstest")
+End Sub
+
+
+Private Sub btn_save_Click
+	xui.SetDataFolder("kvs")
+ 
+	xui.MsgboxAsync("Instellingen opgeslagen", "Meliding")
+
+End Sub
+
+
+ 
+ 
+Sub JobDone(job As HttpJob)
+	If job.Success Then
+		Select job.JobName
+			Case "heartbeat"
+				
+			Case "addscan"
+	
+	 End Select
+ 
+				
+		
+
+	End If
+			End Sub
+
+
+
+Sub tmr_Tick
+	
+	Dim job As HttpJob
+	job.Initialize("heartbeat", Me)
+	job.Download("http://rijnvicus.stallingbase.nl/application/heartbeat?token=" & macaddress)
+	
+End Sub
+
+ 
+
+Private Sub txt_tag_EnterPressed
+	Log(macaddress)
+	 txt_lastactivity.Text  =DateTime
+	Dim job As HttpJob
+	job.Initialize("addscan", Me)
+	job.Download("http://rijnvicus.stallingbase.nl/application/addscan?tag=" & txt_tag.Text & "&token=" & macaddress)
+	
+End Sub
